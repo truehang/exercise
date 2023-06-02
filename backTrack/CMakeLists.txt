@@ -1,0 +1,2 @@
+add_executable(backTrackCombination backTrackCombination.cpp)
+add_executable(backTrackPermutation backTrackPermutation.cpp)
