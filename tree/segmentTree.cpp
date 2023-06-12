@@ -23,6 +23,8 @@ void build(int v, int s, int e, vector<int> &nums)
     build(v * 2 + 1, s, m, nums);
     build(v * 2 + 2, m + 1, e, nums);
     segmentTree[v] = segmentTree[v * 2 + 1] + segmentTree[v * 2 + 2];
+    // 如果是求区间最大值则
+    // segmentTree[v] = max(segmentTree[v * 2 + 1], segmentTree[v * 2 + 2]);
 }
 
 void change(int index, int val, int v, int s, int e)
@@ -40,6 +42,9 @@ void change(int index, int val, int v, int s, int e)
 
     //汇总更新前缀和
     segmentTree[v] = segmentTree[v * 2 + 1] + segmentTree[v * 2 + 2];
+    // 如果是求区间最大值则
+    // segmentTree[v] = max(segmentTree[v * 2 + 1], segmentTree[v * 2 + 2]);
+}
 }
 
 int query(int l, int r, int v, int s, int e)
@@ -53,8 +58,10 @@ int query(int l, int r, int v, int s, int e)
         return query(l, r, v * 2 + 1, s, m); // 在左子树继续找
     else if(l > m)
         return query(l, r, v *2 + 2, m+1,e); // 在右子树继续找
-    else
-        return query(l, m, v * 2 + 1, s, m) + query(m + 1, r, v * 2 + 2, m + 1, e); 
+    return query(l, m, v * 2 + 1, s, m) + query(m + 1, r, v * 2 + 2, m + 1, e); 
+    // 如果是求区间最大值则
+    // return max(query(l, m, v * 2 + 1, s, m), query(m + 1, r, v * 2 + 2, m + 1, e));
+}
 }
 
 /*
@@ -65,3 +72,6 @@ build(0,0,n -1, nums);
 change(index, val, 0, 0, n -1);
 query(left, right, 0, 0, n - 1);
 */
+
+// 单调栈加二分查找加线段树可以求二维的最值
+// 
