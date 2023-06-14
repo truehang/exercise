@@ -7,7 +7,5 @@ set(CMAKE_BUILD_TYPE debug)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y") 
 # add component to build
 add_subdirectory(binarySearch)
-add_subdirectory(heapSort)
-add_subdirectory(quickSort)
-add_subdirectory(backTrack)
 add_subdirectory(graph)
+add_subdirectory(leetcode46)

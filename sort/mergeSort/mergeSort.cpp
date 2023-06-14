@@ -47,3 +47,36 @@ ListNode *mergeList(ListNode *head1, ListNode *head2)
     
     return dummy->next;
 }
+
+
+//归并排序还可以寻找逆序对，就是右边的数小于左边的数
+// 就是在归并排序的同时，返回逆序对的个数
+//在归并排序的同时统计逆序对数量
+int mergeSort(vector<int> &nums, vector<int> &tmp, int l, int r)
+{
+    if(l >= r) return 0;
+    int m = l + (r - l) / 2;
+    int cnt = mergeSort(nums, tmp, l, m) + mergeSort(nums, tmp, m + 1, r);
+    int i = l, j = m + 1, pos = l;
+    while(i <= m && j <= r)
+    {
+        if(nums[i] <= nums[j])
+        {
+            tmp[pos++] = nums[i++];
+            cnt += j - (m + 1);
+        }else{
+            tmp[pos++] = nums[j++];
+        }
+    }
+    while(i <= m)
+    {
+        tmp[pos++] = nums[i++];
+        cnt += j - (m + 1);
+    }
+    while( j <= r)
+    {
+        tmp[pos++] = nums[j++];
+    }
+    copy(tmp.begin() + l, tmp.begin()+ r + 1, nums.begin() + l);
+    return cnt;
+}

@@ -99,6 +99,21 @@ public:
     struct FenwickTree fentree;
 };
 */
+// 应用2：逆序对的计算
+// 树状数组中每个元素表示的含义是当前管理范围中k∈[i, j], A[k] <= j 的个数
+// 先离散化
+/*
+ vector<int> tmp(nums);
+sort(tmp.begin(), tmp.end());
+for(int &num : nums)
+    num = lower_bound(tmp.begin(), tmp.end(), num) - tmp.begin() + 1;
+*/
+// 离散化后的数位于[1, n]区间范围内，树状数组的大小为n+1，可以管理这些数。
+// 离散化后的数同时也是树状数组的下标index，所以在所有管理了该index的地方计数加一
+// 如果我们要找有多少个数比该数小，那么就是在(0, index - 1]的范围中统计<= index - 1 有多少计数,
+// 也就是对index -1求前缀和
+// 从后往前更新树状数组。
+// 逆序对的计算也可以使用归并排序来算
 
 // 二维的树状数组
 struct BIT{
@@ -176,3 +191,55 @@ private:
     BIT ftree;
 };
 */
+
+// 应用：求LIS最长递增子序列的个数
+#define LSB(i) ((i) & -(i))
+int n;
+vector<vector<int>> A;// 自己管辖范围内的LIS的最长长度以及计数 <len, cnt>
+vector<int> query(int i)
+{
+    int len = 0, cnt = 0;
+    for(; i != 0; i -= LSB(i))
+    {
+        if(A[i][0] > len)
+        {
+            len = A[i][0];
+            cnt = A[i][1];
+        }else if( A[i][0] == len)
+        {
+            cnt += A[i][1];
+        }
+    }
+    return {len,cnt};
+}
+void update(int i, const vector<int> &q)
+{
+    for(; i < n; i += LSB(i))
+    {
+        if(A[i][0] < q[0])
+        {
+            A[i][0] = q[0]; // 如果增加一个全新长度的，则传递全新长度，并更新数组
+            A[i][1] = q[1];
+        }else if( A[i][0] == q[0])
+            A[i][1] += q[1]; // 如果只是增加一个相同长度的，那也把增加的计数传递出去
+    }
+}
+
+int findNumberOfLIS(vector<int>& nums) {
+    // 离散化并去重（因为数列要严格递增）
+    set<int> tmp{nums.begin(), nums.end()};
+    unordered_map<int,int> allNum;
+    int idx = 1;
+    for(auto nu : tmp)
+        allNum[nu] = idx++;
+    
+    n = idx + 1;
+    A = vector<vector<int>>(n,vector<int>(2));
+
+    for(auto nu : nums)
+    {
+        auto q = query(allNum[nu] - 1);
+        update(allNum[nu], {q[0] + 1, max(q[1], 1)});
+    }
+    return query(idx)[1];
+}
