@@ -12,6 +12,7 @@
 using namespace std;
 
 //全排列问题
+// 时间复杂度O(n!)
 void permutationHelper(vector<int> &a, int i, vector<vector<int>> &res) 
 {  
     if(i == a.size()) 
@@ -44,22 +45,23 @@ void permutationHelperUnique(vector<int> &a, int i, vector<vector<int>> &res)
     }
     // i为首位置，i之后位置的数都可以换到i上
     // 如果已经有一个数m和首位置互换了，那么之后的m不需要再和首位置互换，否则首位置的数就重复了，结果也是重复的
-    int memo = (1 << 21) - 1; // -10 <= a[i] <= 10
-    for(int j = i; j < a.size(); ++j)
+    unordered_set<int> memo;
+    for(int j = i; j < nums.size(); ++j)
     {
-        if((memo >> (a[j] + 10)) & 1) // 如果可用，则说明没有重复
+        if(memo.count(nums[j]) == 0)
         {
-            memo ^= 1 << (a[j] + 10); // 置零，标记为已使用
-            swap(a[i], a[j]); // 交换该位置和首位置，交换n次就意味着i位置可以存放n个数。
-            permutationHelperUnique(a, i + 1, res); // 接着计算下一个位置的交换可能性
-            swap(a[i], a[j]);
+            // value not swap with nums[i] before
+            memo.insert(nums[j]);
+            swap(nums[i], nums[j]);// 这里的j已经交换了值了
+            helper(nums, i + 1, res);
+            swap(nums[i], nums[j]);
         }
     }
 }
 
 vector<vector<int>> permuteUnique(vector<int>& nums) {
     vector<vector<int>> res;
-    permutationHelperUnique(nums, 0, res);
+    permutationHelperUnique(nums, 0, res); 
     return res;
 }
 

@@ -12,6 +12,7 @@
 using namespace std;
 
 // 枚举是否选择当前这个，并且有选择的先后顺序
+// 时间复杂度O(2^n)
 void backTrackSelect(vector<int> &a, int i, vector<int> &subset, vector<vector<int>> &res)
 {
     if(i == a.size()) // 终止条件
@@ -129,7 +130,7 @@ void backTrackSelectSum2(vector<int> &a, int i, int sum, int target, vector<int>
     sum -= a[i];
     subset.pop_back(); 
    
-    // 选择下一个时，需要跳到下一个不重复的位置
+    // 选择下一个时，需要跳到下一个不重复的位置, 这个只能在排序后，找子集时使用
     int j = i + 1;
     while(j < a.size() && a[j] == a[i]) ++j;
     backTrackSelectSum2(a, j, sum, target, subset, res);
@@ -142,6 +143,36 @@ vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
     return res;
 }
 
+// 子序列问题
+// 找递增序列， 不能排序
+void dfs(vector<int>& nums, int i, int last, vector<int> &seq, vector<vector<int>> &res)
+{
+    if(i == nums.size())
+    {
+        if(seq.size() > 1)
+            res.emplace_back(seq);
+        return;
+    }
+    // 选择当前元素
+    if(nums[i] >= last)
+    {
+        seq.push_back(nums[i]);
+        dfs(nums, i + 1, nums[i], seq, res);
+        seq.pop_back();
+    }
+
+    // 不选择当前元素,假如当前元素等于上一个元素，那么往后递归的数一定会产生重复
+    // 所以当前元素不等于前面元素才能递归下去
+    if(nums[i] != last)
+        dfs(nums, i + 1, last,seq, res);
+}
+
+vector<vector<int>> findSubsequences(vector<int>& nums) {
+    vector<int> seq;
+    vector<vector<int>> res;
+    dfs(nums, 0, INT_MIN, seq, res);
+    return res;
+}
 
 void dumpSubsets(const vector<vector<int>> &a)
 {

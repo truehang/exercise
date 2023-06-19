@@ -9,9 +9,6 @@
 vector<vector<int>> dp(m + 1, vector<int>(n + 1));
 // 初始状态确认
 dp[0][0] = x;
-// 如果两个之中可以有一个参与，则
-for(int i = 0; i < m; ++i)
-    dp[i][0] = xxx;
 for(int i = 0; i < n; ++i)
     dp[0][i] = xxx;
 // 必须有两个参与

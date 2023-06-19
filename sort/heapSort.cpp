@@ -77,6 +77,7 @@ void heapSort(vector<int> &v)
     int i = v.size();
     while (--i > 0)
     {
+        // 把最大值放到最后，把最小值插入堆中，堆的size减一
         swap(v[i], v[0]);
         maxHeapify(v, 0, i);
     }
